@@ -11,22 +11,26 @@ import org.springframework.stereotype.Service;
 public class KafkaProducerService {
 	
 	private KafkaTemplate<String, Object> kafkaTemplate;
+	private String messageStatus;
 	
 	public KafkaProducerService(KafkaTemplate<String, Object> template) {
 		this.kafkaTemplate=template;
 	}
 	
-	public void SendMessageToTopic(String message) {
+	public String SendMessageToTopic(String message) {
 		
-		CompletableFuture<SendResult<String,Object>> future= kafkaTemplate.send("prakash-topic", message);
+		CompletableFuture<SendResult<String,Object>> future= kafkaTemplate.send("prakash-topic-1", message);
+		
 		future.whenComplete((result,exception)->{
 			if(exception==null) {
-				System.out.println(message+" sent to topic with offset "+result.getRecordMetadata().offset());
+				this.messageStatus=message+" sent to topic with offset "+result.getRecordMetadata().offset();
 			}
 			else {
-				System.out.println("Message Not Sent due to "+ exception.getMessage());
+				this.messageStatus="Message Not Sent due to "+ exception.getMessage();
 			}
 		});
+		
+		return messageStatus;
 		
 	}
 

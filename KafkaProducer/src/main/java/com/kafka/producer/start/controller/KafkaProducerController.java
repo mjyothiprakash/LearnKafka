@@ -20,8 +20,9 @@ public class KafkaProducerController {
 	@GetMapping("/send/{message}")
 	public ResponseEntity<?> publichMessage(@PathVariable String message){
 		try {
-			kafkaProducerService.SendMessageToTopic(message);
-			return ResponseEntity.status(HttpStatus.OK).body("Message sent...");
+			String messageStatus=kafkaProducerService.SendMessageToTopic(message);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(messageStatus);
 		}
 		catch(Exception ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not Sent"+ex.getMessage());
